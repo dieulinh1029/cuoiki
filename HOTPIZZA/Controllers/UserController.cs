@@ -108,7 +108,7 @@ namespace HOTPIZZA.Controllers
                         return RedirectToAction("Index", "Home");
                     }
                 }
-                ViewBag.Fail = "Đăng nhập thất bại";
+                ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng.");
                 return View("DangNhap");
             }
             return View(lg);
