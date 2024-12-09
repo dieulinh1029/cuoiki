@@ -2,155 +2,119 @@
 @model List<Giohang>
 
 @{
-    ViewBag.Title = "GioHang";
+    ViewBag.Title = "DonHang";
     Layout = "~/Views/Shared/_LayoutHome.cshtml";
 }
-<style>
-    /* Nút Đặt hàng */
-    .btn-danger {
-        display: inline-block;
-        padding: 12px 30px; /* Điều chỉnh kích thước của nút */
-        font-size: 16px; /* Kích thước chữ */
-        font-weight: bold;
-        text-transform: uppercase; /* Chữ in hoa */
-        background-color: #d9534f; /* Màu đỏ */
-        color: #fff;
-        border: 2px solid #d9534f; /* Đường viền màu đỏ */
-        border-radius: 5px; /* Bo góc */
-        cursor: pointer;
-        text-align: center;
-        transition: all 0.3s ease; /* Hiệu ứng chuyển động */
-    }
 
-        .btn-danger:hover {
-            background-color: #c9302c; /* Màu đỏ đậm khi hover */
-            border-color: #c9302c; /* Màu viền khi hover */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Hiệu ứng bóng đổ */
-        }
+<div class="checkout-container">
+    <!-- Form đặt hàng -->
+    <div class="checkout-left">
+        <h1>Thanh Toán</h1>
 
-        .btn-danger:focus {
-            outline: none; /* Bỏ viền khi click vào nút */
-        }
+        <!-- Thông tin khách hàng -->
+        @{
+            HOTPIZZA.Models.NguoiDung nd = (HOTPIZZA.Models.NguoiDung)Session["user"];
 
-        .btn-danger:active {
-            transform: translateY(2px); /* Nút bị "hạ" khi nhấn */
-        }
-    /* Container chứa các nút */
-    .button-container {
-        display: flex;
-        gap: 10px; /* Khoảng cách giữa các nút */
-        justify-content: flex-start; /* Căn trái hoặc thay thành 'center' để căn giữa */
-    }
-
-    /* Nút "Cập nhật" */
-    .btn-update {
-        padding: 10px 20px;
-        font-size: 14px;
-        font-weight: bold;
-        color: #fff;
-        background-color: #5bc0de; /* Màu xanh dương sáng */
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        .btn-update:hover {
-            background-color: #31b0d5; /* Màu xanh đậm khi hover */
-            transform: translateY(-2px); /* Hiệu ứng nâng lên khi hover */
-        }
-
-        .btn-update:active {
-            transform: translateY(2px); /* Hiệu ứng khi nhấn */
-        }
-
-    /* Nút "Xóa" */
-    .btn-remove {
-        padding: 10px 20px;
-        font-size: 14px;
-        font-weight: bold;
-        color: #fff;
-        background-color: #f44336; /* Màu đỏ */
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
-
-        .btn-remove:hover {
-            background-color: #c62828; /* Màu đỏ đậm khi hover */
-            transform: translateY(-2px); /* Hiệu ứng nâng lên khi hover */
-        }
-
-        .btn-remove:active {
-            transform: translateY(2px); /* Hiệu ứng khi nhấn */
-        }
-
-    ``
-
-
-</style>
-
-<div class="cart-container">
-    <h2 style="color:#f7901e; text-align: center;">GIỎ HÀNG CỦA BẠN</h2>
-    <table class="cart-table">
-        <thead>
-            <tr>
-                <th>Tên món</th>
-                <th>Hình</th>
-                <th>Đơn giá</th>
-                <th>Số lượng</th>
-                <th>Thành tiền</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
+            if (nd == null)
             {
-                <tr>
-                    <td>@item.TenMon</td>
-                    <td>
-                        <div class="product-info">
-                            <img src="@Url.Content("~/images/Menu/" + item.HinhMinhHoa)" alt="" class="product-image" />
-                            @*<span class="product-name">@item.HinhMinhHoa</span>*@
-                        </div>
-                    </td>
-                    <td>@String.Format("{0:#,##0} VNĐ", item.DonGia)</td>
-
-                    @using (Html.BeginForm("CapNhatGioHang", "GioHang", new { @IdMon = item.IdMon }))
-                    {
-                        <td>@Html.TextBox("txtSoLuong", item.SoLuong) </td>
-                        <td>
-                            @String.Format("{0:#,##0} VNĐ", item.ThanhTien)
-                        </td>
-                        <td>
-                            <button type="submit" class="btn btn-update">Cập nhật</button>
-                            <br />
-                            <button class="btn btn-remove">
-                                @Html.ActionLink("Xóa", "XoaGioHang", new { @IdMon = item.IdMon })
-                            </button>
-                        </td>
-
-                    }
-
-
-
-                </tr>
+                // Nếu không có người dùng trong session, chuyển hướng đến trang đăng nhập
+                Response.Redirect("/Login");
             }
-        </tbody>
-    </table>
-    <div class="cart-footer">
-        <span class="total-label">Tổng cộng:</span>
-        <span class="total-price">
-            @String.Format("{0:#,##0} VNĐ", Model.Sum(item => item.DonGia * item.SoLuong))
-        </span>
-        @using (Html.BeginForm("DonHang", "GioHang", new { @class = "" }))
-        {
-            <input type="submit" value="Đặt hàng" class="btn-danger" />
         }
 
+        @using (Html.BeginForm("DatHang", "GioHang", FormMethod.Post, new { id = "orderForm" }))
+        {
+            <div>
+                @Html.ValidationSummary(true)
+                <div class="section">
+                    <h2>Thông Tin Khách Đặt Hàng</h2>
+                    <label for="name">Họ và Tên</label>
+                    <p style="font-size:20px; color:#962525;"> @nd.HovaTen </p>
+                    <label for="email">Email</label>
+                    <p style="font-size:20px; color:#962525;"> @nd.Email </p>
+                    <label for="phone">Số Điện Thoại</label>
+                    <p style="font-size:20px; color:#962525;"> @nd.Phone </p>
+                </div>
+                <!-- Tiếp tục các phần còn lại của form -->
+            </div>
+        }
+
+        <!-- Thông tin giao hàng -->
+        <div class="section">
+            <h2>Thông Tin Giao Hàng</h2>
+            <label for="name">Họ và Tên Người Nhận</label>
+            @Html.TextBox("tennguoinhan", null, new { @required = "required" })
+
+            <label for="address">Địa Chỉ Nhận Hàng</label>
+            @Html.TextBox("diachi", null, new { @required = "required" })
+
+            <label for="phone">Số Điện Thoại Người Nhận</label>
+            @Html.TextBox("phone", null, new { @required = "required" })
+
+            <label for="date">Ngày Đặt</label>
+            <p style="font-size:20px; color:#962525;"> @DateTime.Now.ToShortDateString() </p>
+
+            <label for="date">Ngày Giao</label>
+            @Html.TextBox("ngaygiao", null, new { type = "datetime-local", @required = "required" })
+        </div>
+
+        <!-- Phương thức thanh toán -->
+        <div class="section">
+            <h2>Phương Thức Thanh Toán</h2>
+            <div class="payment-options">
+                <label>
+                    <input type="radio" name="payment" value="cod" checked> Thanh toán khi nhận hàng
+                </label>
+                @* Thanh toán qua VNPAY *@
+                <div>
+                    <label>
+                        <input type="radio" name="payment" value="vnpay"> Thanh toán qua VNPAY
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nút Xác Nhận -->
+        <input type="submit" value="Đặt hàng" class="btn-danger" onclick="return handlePayment();" />
+    </div>
+        }
     </div>
 
+    <!-- Giỏ hàng -->
+    <div class="checkout-right" style="font-weight: bold">
+        <h2>Giỏ Hàng Của Bạn</h2>
+        <ul class="cart-items">
+            @foreach (var item in Model)
+            {
+                <li class="cart-item">
+                    <img src="@Url.Content("~/images/Menu/" + item.HinhMinhHoa)" alt="" class="product-image" />
+                    <div class="item-details">
+                        <span class="item-name">@item.TenMon x @item.SoLuong</span>
+                        <span class="item-price">  @String.Format("{0:#,##0} VNĐ", item.ThanhTien)</span>
+                    </div>
+                </li>
+            }
+        </ul>
+        <div class="cart-total">
+            <span>Tổng Cộng:</span>
+            <span class="total-price"> @String.Format("{0:#,##0} VNĐ", Model.Sum(item => item.DonGia * item.SoLuong))</span>
+        </div>
+    </div>
 </div>
 
+<script>
+    function handlePayment() {
+        var paymentMethod = document.querySelector('input[name="payment"]:checked').value;
 
+        if (paymentMethod === "vnpay") {
+            // Lấy thông tin tổng tiền đơn hàng để gửi đến VNPAY
+            var totalAmount = @Model.Sum(item => item.DonGia * item.SoLuong);
+
+            // Chuyển hướng tới trang VNPAY
+            window.location.href = '@Url.Action("CreatePaymentUrl", "Payment", new { amount = "__AMOUNT__" })'.replace("__AMOUNT__", totalAmount);
+            return false;  // Ngừng gửi form, chuyển hướng đi VNPAY thay vì gửi form
+        }
+
+        return true;  // Nếu là COD, form sẽ được gửi đi
+    }
+</script>

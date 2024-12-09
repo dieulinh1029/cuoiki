@@ -73,10 +73,11 @@
                         @*<label>
                                 <input type="radio" name="payment" value="card"> Thẻ tín dụng/ghi nợ
                             </label>*@
-                        <button >
-                            <a href="~/GioHang/PaymentWithPayPal">Thanh toán qua PayPal</a>
+                    <button>
+                        @Html.ActionLink("Thanh toán qua VNPAY", "CreatePaymentUrl", "Payment", new { amount = 100000 }, null)
 
-                        </button>
+
+                    </button>
                     </div>
                 </div>
                 <!-- Nút Xác Nhận -->
